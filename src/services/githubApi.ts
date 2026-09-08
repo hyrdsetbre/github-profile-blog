@@ -1,18 +1,13 @@
 import type { GitHubUser, GitHubRepo, GitHubEvent } from '../types/github';
 
 const GITHUB_USERNAME = 'hyrdsetbre';
-const BASE_URL = 'https://api.github.com';
-
-// 可选：使用 Token 提高请求限制（60/h → 5000/h）
-const GITHUB_TOKEN = ''; // 不硬编码 token，保持公开访问
+// 通过 Cloudflare Pages Functions 代理，在服务端添加 Token
+// 避免 Token 暴露在前端，同时提高 API 请求限制（60/h -> 5000/h）
+const BASE_URL = '/api/github';
 
 const headers: HeadersInit = {
   Accept: 'application/vnd.github.v3+json',
 };
-
-if (GITHUB_TOKEN) {
-  headers.Authorization = `token ${GITHUB_TOKEN}`;
-}
 
 export async function fetchUser(): Promise<GitHubUser> {
   const response = await fetch(`${BASE_URL}/users/${GITHUB_USERNAME}`, { headers });
